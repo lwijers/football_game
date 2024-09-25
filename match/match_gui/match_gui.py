@@ -1,7 +1,15 @@
 import pygame
 import pygame_gui  # Import pygame_gui
+from pygame_gui.core import ObjectID
+import json
 import random
 from const import *
+
+THEME =  {}
+with open("match/match_gui/theme.json", 'r', encoding='utf-8') as file:
+    theme = json.load(file)
+
+
 
 class CommentBox:
     def __init__(self, ui_manager, center_position):
@@ -14,19 +22,18 @@ class CommentBox:
         self.comment_timer = 0  # Timer to track comment display time
         self.clock = pygame.time.Clock()  # Create a clock for timing
 
-        # Set the font and size
-        self.font_name = "Arial"  # Specify your font name here
-        self.font_size = 20  # Specify your font size here
-        self.font = pygame.font.SysFont(self.font_name, self.font_size)
-
         # Initialize label with empty text
         self.comment_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((0, 0), (200, 50)),  # Default size, will be updated
+            relative_rect=pygame.Rect((0, 0), (400, 100)),  # Default size, will be updated
             text="",  # Initialize with an empty string
-            manager=self.ui_manager
+            manager=self.ui_manager,
+            object_id=ObjectID(object_id='#comment_box')
         )
 
         self.center_position = center_position  # Store the center position
+
+        # Initialize the font separately for sizing purposes
+        self.font = pygame.font.Font("assets/fonts//coolvetica.ttf", theme["#comment_box"]["font"]['size'])  # Match the theme font
 
     def update(self):
         if self.clean_comments:  # Only update if there are valid comments to display
@@ -62,36 +69,46 @@ class CommentBox:
             current_comment = self.clean_comments[self.current_comment_index]["comment"]
             self.comment_label.set_text(current_comment)  # Update to the current comment
 
-            # Calculate the size of the text using the font
+            # Calculate the size of the text using the font defined earlier (separate from theme)
             text_size = self.font.size(current_comment)
 
-            # Update the size of the label based on the text
-            self.comment_label.set_dimensions((text_size[0] + 10, text_size[1] + 10))  # Add some padding
+            # Update the size of the label based on the text, adding padding
+            new_width = text_size[0] + 20  # Add padding (10px on each side)
+            new_height = text_size[1] + 20  # Add padding (10px top and bottom)
+            self.comment_label.set_dimensions((new_width, new_height))
 
             # Recenter the label based on its new dimensions
-            label_width, label_height = text_size[0] + 10, text_size[1] + 10
             new_position = (
-                self.center_position[0] - label_width // 2,  # Center x - half width
-                self.center_position[1] - label_height // 2  # Center y - half height
+                self.center_position[0] - new_width // 2,  # Center x - half width
+                self.center_position[1] - new_height // 2  # Center y - half height
             )
             self.comment_label.set_relative_position(new_position)  # Set new position of the label
             self.comment_label.rebuild()  # Refresh the label display
 
-
+import pygame
+import pygame_gui
+from pygame_gui.core import ObjectID
 
 class ScoreElement:
     def __init__(self, ui_manager, match_engine, position):
         self.ui_manager = ui_manager
         self.match_engine = match_engine
 
+        # Load the font that matches the theme (if you want to match the theme's font size)
+        self.font = pygame.font.Font("assets/fonts/coolvetica.ttf", theme["#score_element"]["font"]['size'])  # Example font
+
         # Create a score label
         self.score_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect(position, (200, 50)),  # Position it as specified
+            relative_rect=pygame.Rect(position, (300, 50)),  # Default size, will be updated
             text=self.get_score_text(),  # Set initial score text
-            manager=self.ui_manager
+            manager=self.ui_manager,
+            object_id=ObjectID(object_id='#comment_box')  # Adjust if you have a specific object_id
         )
 
         self.old_score = self.match_engine.return_score()  # Initial score
+
+        # Set the initial size based on the current score text
+        self.update_label_size()
 
     def update(self):
         current_score = self.match_engine.return_score()
@@ -101,6 +118,7 @@ class ScoreElement:
 
     def update_score_display(self, score):
         self.score_label.set_text(self.get_score_text(score))  # Update the score label text
+        self.update_label_size()  # Adjust size based on new score text
 
     def get_score_text(self, score=None):
         if score is None:
@@ -111,6 +129,25 @@ class ScoreElement:
         home_short_name = self.match_engine.home_team["short_name"]
         away_short_name = self.match_engine.away_team["short_name"]
         return f"{home_short_name} {home_score} - {away_score} {away_short_name}"
+
+    def update_label_size(self):
+        # Get the current score text
+        score_text = self.score_label.text
+
+        # Calculate the size of the text using the font
+        text_size = self.font.size(score_text)  # Returns (width, height)
+
+        # Update the label dimensions based on text size, add some padding
+        new_width = text_size[0] + 20  # Add padding
+        new_height = text_size[1] + 20  # Add padding
+        self.score_label.set_dimensions((new_width, new_height))
+
+        # Optionally, reposition the label based on new dimensions
+        current_position = self.score_label.relative_rect.topleft
+        self.score_label.set_relative_position((current_position[0], current_position[1]))
+
+        # Rebuild the label to apply changes
+        self.score_label.rebuild()
 
 
 class MatchGui:

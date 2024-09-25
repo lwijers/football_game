@@ -1,12 +1,12 @@
 import pygame
 import pygame_gui  # Import pygame_gui
-import os
+# import os
 from const import *
 import scene_base
 import match.match_engine as match_engine
 from match.match_gui import match_gui
 
-PATH =  os.getcwd()
+# PATH =  os.getcwd()
 
 ajax = {
     'name': 'Ajax',
@@ -34,7 +34,7 @@ class Match_scene(scene_base.Scene_base):
     def __init__(self, event_bus):
         scene_base.Scene_base.__init__(self, event_bus)
         self.m_engine = match_engine.MatchEngine(event_bus, home_team, away_team)
-        self.ui_manager = pygame_gui.UIManager((SW, SH), f"{PATH}/match/match_gui/theme.json")
+        self.ui_manager = pygame_gui.UIManager((SW, SH), "match/match_gui/theme.json")
         self.m_gui = match_gui.MatchGui(self.ui_manager,self.m_engine)
         self.match_report = self.m_engine.run_match()
         print(self.match_report.generate_report())
