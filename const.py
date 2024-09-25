@@ -1,0 +1,34 @@
+SW = 1500
+SH = 1000
+
+FPS = 60
+
+
+
+
+
+# COLORS_---------------------------------------
+
+CHESSWHITE = (180, 180, 180)
+CHESSBLACK = (100, 100, 100)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+LIGHT_GREY  = (175,175,175)
+DARK_GREY = (75, 75, 75)
+GREEN = (50, 150, 50)
+LIGHT_GREEN = (180, 230,180)
+LIME = (150, 255, 0)
+DARK_GREEN = (0, 90, 0)
+RED = (255,0, 0)
+DARK_RED = (150, 0, 0)
+YELLOW = (255, 255, 0)
+BLUE = (0,0,255)
+NICE_BLUE = (40, 90, 160)
+LIGHT_BLUE = (150, 190, 250)
+PURPLE = (97, 33, 175)
+
+BROWN = (80, 30, 10)
+BEIGE = (120, 70, 50)
+
+COLORKEY =(255, 0, 255)
+BG_COLOR = (34, 139, 34)
