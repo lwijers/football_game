@@ -10,15 +10,17 @@ class CommentBox(resizable_label.ResizableLabel):
                          theme["#comment_box"]["font"]['size'])
 
         self.ui_manager = ui_manager
-        self.publication_threshold = 0.5  # Probability threshold
+
+        self.publication_threshold = 0.1  # Probability threshold
+        self.comment_display_time = 2000  # Time to display each comment in milliseconds
+        self.match_finished = False
         self.dirty_comments = []  # Comments that need to be filtered
         self.clean_comments = []  # Comments that pass the filter
         self.current_comment_index = 0
-        self.comment_display_time = 1500  # Time to display each comment in milliseconds
         self.comment_timer = 0  # Timer to track comment display time
         self.clock = pygame.time.Clock()  # Create a clock for timing
-
         # Initialize label with empty text
+
         self.comment_label = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect((0, 0), (400, 100)),  # Default size, will be updated
             text="",  # Initialize with an empty string
@@ -38,10 +40,11 @@ class CommentBox(resizable_label.ResizableLabel):
 
             if self.comment_timer >= self.comment_display_time:
                 self.comment_timer = 0  # Reset the timer
-                self.current_comment_index += 1  # Move to the next comment
-                if self.current_comment_index >= len(self.clean_comments):
-                    self.current_comment_index = 0  # Loop back to the first comment
-                self.update_comment_label()  # Update the comment label with the new comment
+                if self.current_comment_index < len(self.clean_comments) - 1:
+                    # Only increment if we haven't reached the last comment
+                    self.current_comment_index += 1
+                # Do not increment further, stay on the last comment
+                self.update_comment_label()  # Update the label with the current comment
 
     def show_report(self, report):
         self.dirty_comments = report.get_all_entries()  # Get comments from the report
@@ -66,7 +69,8 @@ class CommentBox(resizable_label.ResizableLabel):
 
         # Center the label based on the new size
         new_position = (
-            self.center_position[0] - self.label.relative_rect.width // 2,
-            self.center_position[1] - self.label.relative_rect.height // 2
+            self.center_position[0] - self.resizeable_label.relative_rect.width // 2,
+            self.center_position[1] - self.resizeable_label.relative_rect.height // 2
         )
-        self.label.set_relative_position(new_position)
+        self.resizeable_label.set_relative_position(new_position)
+

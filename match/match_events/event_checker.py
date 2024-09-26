@@ -43,23 +43,23 @@ class EventChecker:
         if possession_chance <= game_stats["home_team"]["midfield"] / midfield_stats:
             if game_stats['has_possession'] == "home_team":
                 # print(f"Minute {minute}: Home team keeps possession.")
-                self.event_bus.publish('keeps_possession', minute=minute, report=report, game_stats=game_stats,
+                self.event_bus.publish('has_possession', minute=minute, report=report, game_stats=game_stats,
                                        team_in_possession="home_team")
             else:
                 # print(f"Minute {minute}: Switching possession to home team.")
                 self.event_bus.publish('switch_possession', minute=minute, report=report, game_stats=game_stats,
                                        team_in_possession="home_team")
-                game_stats['has_possession'] = "home_team"  # Update possession status
+                # game_stats['has_possession'] = "home_team"  # Update possession status
         else:
             if game_stats['has_possession'] == "away_team":
                 # print(f"Minute {minute}: Away team keeps possession.")
-                self.event_bus.publish('keeps_possession', minute=minute, report=report, game_stats=game_stats,
+                self.event_bus.publish('has_possession', minute=minute, report=report, game_stats=game_stats,
                                        team_in_possession="away_team")
             else:
                 # print(f"Minute {minute}: Switching possession to away team.")
                 self.event_bus.publish('switch_possession', minute=minute, report=report, game_stats=game_stats,
                                        team_in_possession="away_team")
-                game_stats['has_possession'] = "away_team"  # Update possession status
+                # game_stats['has_possession'] = "away_team"  # Update possession status
 
     def check_dynamic_events(self, minute, report, game_stats):
         self.check_possession_switch(minute, report, self.match_engine.game_stats)

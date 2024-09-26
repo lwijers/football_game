@@ -15,7 +15,8 @@ class CommentGenerator:
             'start_second_half': ['team_a', 'team_b'],
             'announce_extra_time_second_half': ['extra_time'],
             'post_match': ['team_a', 'team_b', 'score_a', 'score_b'],
-            'switch_possession': ['team_ball_gained', 'team_ball_lost']
+            'switch_possession': ['team_ball_gained', 'team_ball_lost'],
+            'has_possession': ['team_in_possession', 'score', 'home_team', 'away_team'],
         }
 
     def validate_arguments(self, trigger, kwargs):

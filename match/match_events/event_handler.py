@@ -11,7 +11,7 @@ class EventHandler:
             "announce_extra_time_second_half": self.on_announce_extra_time_second_half,
             "post_match": self.on_post_match,
             "switch_possession": self.on_switch_possession,
-            "keeps_possession": self.on_keeps_possession,
+            "has_possession": self.on_has_possession,
         }
         self.setup_subscriptions(event_bus)
 
@@ -60,10 +60,13 @@ class EventHandler:
         report.add_entry('switch_possession', minute, team_ball_gained=game_stats[team_in_possession]["name"],
                          team_ball_lost=game_stats[team_lost_possession]["name"])
 
-    def on_keeps_possession(self, minute, report, game_stats, team_in_possession):
+    def on_has_possession(self, minute, report, game_stats, team_in_possession):
         # print(f"Minute {minute}: Handling keeps possession event. Team in possession: {team_in_possession}")
         game_stats['has_possession'] = team_in_possession
-        report.add_entry('keeps_possession', minute, team_in_possession=team_in_possession)
+        print(game_stats)
+        report.add_entry('default_comments', minute, team_in_possession=game_stats[team_in_possession]["name"],
+                         score=f"{game_stats['home_team']['score']} - {game_stats['away_team']['score']}",
+                         home_team=game_stats['home_team']['name'], away_team=game_stats['away_team']['name'])
 
 
-        report.add_entry('keeps_possession', minute, team_in_possession=team_in_possession)
+        # report.add_entry('keeps_possession', minute, team_in_possession=team_in_possession)
